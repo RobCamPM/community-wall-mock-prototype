@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Message Board</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- React and ReactDOM via CDN -->
+  <script src="https://unpkg.com/react/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+  <!-- Simplified bad words filter -->
+  <script>
+    class SimpleBadWordsFilter {
+      constructor() {
+        this.badWords = ["hate", "stupid", "idiot", "fool", "dumb", "moron", "ugly", "loser"];
+        this.badWordsRegex = new RegExp(this.badWords.join("|"), "i");
+      }
+
+      isProfane(text) {
+        return this.badWordsRegex.test(text);
+      }
+    }
+
+    window.SimpleBadWordsFilter = SimpleBadWordsFilter;
+  </script>
+
+  <!-- Our React Code -->
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+    const Filter = window.SimpleBadWordsFilter;
+
+    const GIPHY_API_KEY = 'nt8tlxkDfF37XauKVKzCG69ayXZFOkAb';
+
+    const App = () => {
+      const [posts, setPosts] = useState([]);
+      const [content, setContent] = useState('');
+      const [category, setCategory] = useState('');
+      const [pronouns, setPronouns] = useState('');
+      const [occupation, setOccupation] = useState('');
+      const [filter, setFilter] = useState('');
+      const [prompt, setPrompt] = useState('');
+      const [image, setImage] = useState(null);
+      const [isFormVisible, setIsFormVisible] = useState(true);
+      const [gifQuery, setGifQuery] = useState('');
+      const [gifs, setGifs] = useState([]);
+      const [selectedGif, setSelectedGif] = useState(null);
+      const badWordsFilter = new Filter();
+
+      const promptPart1 = [
+        "What advice would you give",
+        "Can you share a positive experience",
+        "How have you overcome challenges",
+        "Do you have any words of support",
+        "Can you describe your journey"
+      ];
+
+      const promptPart2 = [
+        "for someone starting PrEP?",
+        "regarding STI prevention?",
+        "in your sexual health journey?",
+        "for others in the community?",
+        "with sexual health and wellness?"
+      ];
+
+      const avatars = {
+        'PrEP': 'fas fa-pills',
+        'STI Prevention': 'fas fa-shield-alt',
+        'Advice': 'fas fa-lightbulb',
+        'Affirmation': 'fas fa-hands-helping'
+      };
+
+      useEffect(() => {
+        const initialPosts = [
+          { id: 1, content: 'Starting PrEP was a big step for me. It made me feel more in control of my health and gave me peace of mind.', pronouns: 'he/him', occupation: 'Teacher', category: 'PrEP', avatar: avatars['PrEP'], likes: 0 },
+          { id: 2, content: 'I used to be anxious about STI testing, but now I see it as a regular part of taking care of myself. It\'s empowering to know your status.', pronouns: 'she/her', occupation: 'Doctor', category: 'STI Prevention', avatar: avatars['STI Prevention'], likes: 0 },
+          { id: 3, content: 'There were times when I felt alone in this journey, but finding a support group changed everything. Knowing others have been through similar experiences really helped.', pronouns: 'they/them', occupation: 'Student', category: 'Affirmation', avatar: avatars['Affirmation'], likes: 0 },
+          { id: 4, content: 'If you\'re new to PrEP, my advice is to stick with it. The side effects can be managed, and the benefits are worth it.', pronouns: 'he/him', occupation: 'Engineer', category: 'PrEP', avatar: avatars['PrEP'], likes: 0 },
+          { id: 5, content: 'I faced a lot of stigma initially, but educating myself and others about PrEP has been incredibly empowering. We need to support each other.', pronouns: 'she/her', occupation: 'Nurse', category: 'Advice', avatar: avatars['Advice'], likes: 0 },
+          { id: 6, content: 'Regular testing is key. It\'s not just about protecting yourself, but also about taking care of your partners.', pronouns: 'they/them', occupation: 'Artist', category: 'STI Prevention', avatar: avatars['STI Prevention'], likes: 0 },
+          { id: 7, content: 'Overcoming the fear of getting tested was tough, but now it feels like a regular health check-up. It\'s important to normalize it.', pronouns: 'he/him', occupation: 'Musician', category: 'Affirmation', avatar: avatars['Affirmation'], likes: 0 },
+          { id: 8, content: 'PrEP has been a game changer for me. I feel more confident and less anxious about my sexual health.', pronouns: 'she/her', occupation: 'Designer', category: 'PrEP', avatar: avatars['PrEP'], likes: 0 },
+          { id: 9, content: 'To anyone struggling, remember you\'re not alone. There are communities and resources out there to support you.', pronouns: 'they/them', occupation: 'Freelancer', category: 'Affirmation', avatar: avatars['Affirmation'], likes: 0 },
+          { id: 10, content: 'Taking control of your sexual health is a powerful thing. Don\'t let fear or stigma hold you back.', pronouns: 'he/him', occupation: 'Photographer', category: 'Advice', avatar: avatars['Advice'], likes: 0 },
+          { id: 11, content: 'PrEP has been an essential part of my life for the past two years. The initial side effects were minimal, and the peace of mind it provides is invaluable.', pronouns: 'he/him', occupation: 'Software Developer', category: 'PrEP', avatar: avatars['PrEP'], likes: 0 },
+          { id: 12, content: 'Knowing your status is the first step to taking control of your health. Regular testing has become a routine part of my life, and it feels great to be proactive.', pronouns: 'she/her', occupation: 'Journalist', category: 'STI Prevention', avatar: avatars['STI Prevention'], likes: 0 },
+          { id: 13, content: 'Joining a community of people on PrEP has been incredibly supportive. We share tips, encourage each other, and celebrate our health milestones together.', pronouns: 'they/them', occupation: 'Community Organizer', category: 'Affirmation', avatar: avatars['Affirmation'], likes: 0 },
+          { id: 14, content: 'One piece of advice I\'d give to anyone starting PrEP is to be patient with yourself. It can take time to adjust, but it\'s worth it for the peace of mind.', pronouns: 'he/him', occupation: 'Chef', category: 'PrEP', avatar: avatars['PrEP'], likes: 0 },
+          { id: 15, content: 'I found that open communication with my healthcare provider about PrEP and STI prevention has made a huge difference. Don\'t be afraid to ask questions!', pronouns: 'she/her', occupation: 'Therapist', category: 'Advice', avatar: avatars['Advice'], likes: 0 },
+          { id: 16, content: 'Testing regularly for STIs is a form of self-care. It shows that you value your health and the health of your partners.', pronouns: 'they/them', occupation: 'Graphic Designer', category: 'STI Prevention', avatar: avatars['STI Prevention'], likes: 0 },
+          { id: 17, content: 'Support from friends and family has been crucial in my journey. Don\'t hesitate to lean on those who care about you.', pronouns: 'he/him', occupation: 'Barista', category: 'Affirmation', avatar: avatars['Affirmation'], likes: 0 },
+          { id: 18, content: 'PrEP has allowed me to feel more liberated in my sexuality. It\'s an incredible tool for managing my health.', pronouns: 'she/her', occupation: 'Writer', category: 'PrEP', avatar: avatars['PrEP'], likes: 0 },
+          { id: 19, content: 'Remember, it\'s okay to feel scared or unsure. Taking that first step towards managing your health is the bravest thing you can do.', pronouns: 'they/them', occupation: 'Marketing Specialist', category: 'Affirmation', avatar: avatars['Affirmation'], likes: 0 },
+          { id: 20, content: 'Educating myself about PrEP and STI prevention has been empowering. Knowledge is power, and it has helped me make informed decisions about my health.', pronouns: 'he/him', occupation: 'Researcher', category: 'Advice', avatar: avatars['Advice'], likes: 0 }
+        ];
+        const storedPosts = sessionStorage.getItem('posts');
+        if (storedPosts) {
+          setPosts(JSON.parse(storedPosts));
+        } else {
+          setPosts(initialPosts);
+          sessionStorage.setItem('posts', JSON.stringify(initialPosts));
+        }
+
+        generatePrompt();
+      }, []);
+
+      const generatePrompt = () => {
+        const part1 = promptPart1[Math.floor(Math.random() * promptPart1.length)];
+        const part2 = promptPart2[Math.floor(Math.random() * promptPart2.length)];
+        setPrompt(`${part1} ${part2}`);
+      };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+
+        // Use SimpleBadWordsFilter to check for harmful language
+        if (badWordsFilter.isProfane(content)) {
+          alert("Your post contains language that is not allowed. Please edit your post.");
+          return;
+        }
+
+        if (!category) {
+          alert("Please select a category.");
+          return;
+        }
+
+        const newPost = {
+          id: Date.now(),
+          content,
+          pronouns,
+          occupation,
+          category,
+          image,
+          avatar: avatars[category],
+          gif: selectedGif,
+          likes: 0
+        };
+
+        const updatedPosts = [newPost, ...posts];
+        setPosts(updatedPosts);
+        sessionStorage.setItem('posts', JSON.stringify(updatedPosts));
+
+        setContent('');
+        setPronouns('');
+        setOccupation('');
+        setCategory('');
+        setImage(null);
+        setSelectedGif(null);
+      };
+
+      const handleRefreshPrompt = () => {
+        generatePrompt();
+      };
+
+      const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImage(reader.result);
+        };
+        if (file) {
+          reader.readAsDataURL(file);
+        }
+      };
+
+      const handleCategorySelect = (selectedCategory) => {
+        setCategory(selectedCategory);
+      };
+
+      const toggleFormVisibility = () => {
+        setIsFormVisible(!isFormVisible);
+      };
+
+      const handleGifSearch = (e) => {
+        setGifQuery(e.target.value);
+        if (e.target.value.length > 2) {
+          fetch(`https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${e.target.value}&limit=10`)
+            .then(response => response.json())
+            .then(data => setGifs(data.data))
+            .catch(error => console.error('Error fetching GIFs:', error));
+        } else {
+          setGifs([]);
+        }
+      };
+
+      const handleGifSelect = (gifUrl) => {
+        setSelectedGif(gifUrl);
+        setGifs([]);
+        setGifQuery('');
+      };
+
+      const handleLikePost = (postId) => {
+        const updatedPosts = posts.map(post => {
+          if (post.id === postId) {
+            const updatedLikes = post.likes + 1;
+            return { ...post, likes: updatedLikes };
+          }
+          return post;
+        });
+        setPosts(updatedPosts);
+        sessionStorage.setItem('posts', JSON.stringify(updatedPosts));
+      };
+
+      const filteredPosts = filter
+        ? posts.filter(post => post.category === filter)
+        : posts;
+
+      return (
+        <div className="container">
+          <nav className="sidebar">
+            <ul>
+              <li>Dashboard</li>
+              <li>Clinical Appointments</li>
+              <li>Clinical Messages</li>
+              <li>Lab Requisitions</li>
+              <li>Prescriptions</li>
+              <li>Medication</li>
+              <li>Support</li>
+              <li>Refer a Friend</li>
+              <li className="active">Community Board</li>
+            </ul>
+          </nav>
+          <main className="content">
+            <h1>Community Message Board</h1>
+            <button className="collapsible" onClick={toggleFormVisibility}>
+              {isFormVisible ? "Hide Post Form" : "Show Post Form"}
+            </button>
+            <div className={`content-collapsible ${isFormVisible ? "expanded" : "collapsed"}`}>
+              <form onSubmit={handleSubmit}>
+                <p>Please note: Users cannot comment or respond to posts. This is a safe space for sharing your thoughts and experiences.</p>
+                <div className="prompt">
+                  <p className="prompt-text"><strong>Prompt:</strong> {prompt}</p>
+                  <button type="button" onClick={handleRefreshPrompt}>Refresh Prompt</button>
+                </div>
+                <textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="Write your message here..."
+                  required
+                />
+                <div className="gender-pronouns">
+                  <label className="pronouns-label">Gender Pronouns (optional):</label>
+                  <select value={pronouns} onChange={(e) => setPronouns(e.target.value)}>
+                    <option value="">Select Pronouns</option>
+                    <option value="he/him">he/him</option>
+                    <option value="she/her">she/her</option>
+                    <option value="they/them">they/them</option>
+                    <option value="ze/zir">ze/zir</option>
+                    <option value="xe/xem">xe/xem</option>
+                  </select>
+                </div>
+                <div className="occupation-field">
+                  <label className="occupation-label">Occupation (optional):</label>
+                  <input
+                    type="text"
+                    value={occupation}
+                    onChange={(e) => setOccupation(e.target.value)}
+                    placeholder="Your occupation"
+                  />
+                </div>
+                <div className="avatar-selection">
+                  {Object.entries(avatars).map(([key, value]) => (
+                    <div key={key} className="avatar-option">
+                      <i
+                        className={`${value} ${category === key ? 'selected' : ''}`}
+                        onClick={() => handleCategorySelect(key)}
+                      ></i>
+                      <div className="label">{key.replace('_', ' ')}</div>
+                    </div>
+                  ))}
+                </div>
+                <input type="file" accept="image/*" onChange={handleImageChange} />
+                <div>
+                  <label>Search for GIF:</label>
+                  <input
+                    type="text"
+                    value={gifQuery}
+                    onChange={handleGifSearch}
+                    placeholder="Search GIFs"
+                  />
+                  <div className="gif-results">
+                    {gifs.map(gif => (
+                      <img
+                        key={gif.id}
+                        src={gif.images.fixed_height.url}
+                        alt={gif.title}
+                        onClick={() => handleGifSelect(gif.images.fixed_height.url)}
+                        style={{ cursor: 'pointer', margin: '5px' }}
+                      />
+                    ))}
+                  </div>
+                  {selectedGif && (
+                    <div className="selected-gif">
+                      <p>Selected GIF:</p>
+                      <img src={selectedGif} alt="Selected GIF" style={{ maxWidth: '100%' }} />
+                    </div>
+                  )}
+                </div>
+                <button type="submit">Post</button>
+              </form>
+            </div>
+            <div>
+              <label>Filter by category: </label>
+              <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+                <option value="">All</option>
+                <option value="PrEP">PrEP</option>
+                <option value="STI Prevention">STI Prevention</option>
+                <option value="Advice">Advice</option>
+                <option value="Affirmation">Affirmation</option>
+              </select>
+            </div>
+            <ul>
+              {filteredPosts.map((post) => (
+                <li key={post.id} className={post.category.replace(" ", "_")}>
+                  <i className={`${post.avatar} avatar`}></i>
+                  <div className="post-content">
+                    <p>{post.content}</p>
+                    {post.image && <img src={post.image} alt="Post Image" className="post-image" />}
+                    {post.gif && <img src={post.gif} alt="GIF" className="post-image" />}
+                    <div className="gender-category">
+                      <small>{post.pronouns}</small>
+                      <small>{post.category}</small>
+                    </div>
+                    {post.occupation && <small>Occupation: {post.occupation}</small>}
+                    <div className="like-button" onClick={() => handleLikePost(post.id)}>
+                      <i className={`fas fa-heart ${post.likes > 0 ? 'liked' : ''}`}></i>
+                      <span className="like-count">{post.likes}</span>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </main>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>

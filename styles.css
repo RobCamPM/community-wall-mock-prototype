@@ -1,0 +1,258 @@
+body {
+  font-family: 'Roboto', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  background-color: #f0f0f0;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #004d40;
+  color: white;
+  padding: 20px;
+  height: 100vh;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin: 15px 0;
+  cursor: pointer;
+}
+
+.sidebar ul li.active {
+  font-weight: bold;
+}
+
+.content {
+  flex-grow: 1;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  margin: 20px;
+}
+
+h1 {
+  color: #333;
+}
+
+form {
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+textarea, input, select {
+  display: block;
+  margin-bottom: 10px;
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.prompt {
+  background-color: #e0f7fa;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.prompt-text {
+  margin: 0;
+}
+
+.prompt button {
+  background-color: #004d40;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 5px 10px;
+  border: none;
+}
+
+.prompt button:hover {
+  background-color: #00332a;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 10px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: flex-start;
+  transition: background-color 0.3s ease;
+}
+
+li:hover {
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.avatar {
+  font-size: 50px;
+  margin-right: 20px;
+}
+
+.post-content {
+  flex-grow: 1;
+}
+
+.post-image {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+small {
+  color: #555;
+  display: block;
+  margin-top: 10px;
+}
+
+.gender-pronouns, .occupation-field {
+  margin-bottom: 10px;
+}
+
+.pronouns-label, .occupation-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.avatar-selection {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.avatar-selection i {
+  font-size: 50px;
+  cursor: pointer;
+  padding: 10px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  transition: border-color 0.3s;
+}
+
+.avatar-selection i.selected {
+  border-color: #007BFF;
+}
+
+.avatar-selection .label {
+  text-align: center;
+  margin-top: 5px;
+  font-size: 14px;
+}
+
+li.PrEP {
+  background-color: #e3f2fd;
+}
+
+li.STI_Prevention {
+  background-color: #e8f5e9;
+}
+
+li.Advice {
+  background-color: #fff3e0;
+}
+
+li.Affirmation {
+  background-color: #fce4ec;
+}
+
+.gender-category {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.collapsible {
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  background-color: #007BFF;
+  color: white;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.collapsible:hover {
+  background-color: #0056b3;
+}
+
+.content-collapsible {
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+.content-collapsible.expanded {
+  display: block;
+}
+.content-collapsible.collapsed {
+  display: none;
+}
+
+.like-button {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #555;
+  transition: color 0.3s ease;
+}
+
+.like-button:hover {
+  color: #e91e63;
+}
+
+.like-button.liked {
+  color: #e91e63;
+}
+
+.like-count {
+  margin-left: 5px;
+  font-size: 14px;
+}
